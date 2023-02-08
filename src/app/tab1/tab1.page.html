@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Recipes
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,30 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Recipes</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+
+
+
+  <ion-text color="primary">
+    <h1 class="center">View all your recipes</h1>
+  </ion-text>
+
+
+  <ion-list *ngFor="let i of rerenderProps">
+    <div *ngFor="let recipe of recipes;">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="center">{{recipe.name}}</ion-card-title>
+          <ion-card-subtitle class="center">ingredients: {{recipe.ingredients}}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content class="center">
+          {{recipe.instructions}}
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ion-list>
 </ion-content>
