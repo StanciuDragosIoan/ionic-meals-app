@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { Tab1Page } from '../tab1/tab1.page';
+import { IonicRestService } from '../ionic-rest.service';
 
 @Component({
   selector: 'app-tab3',
@@ -7,16 +7,11 @@ import { Tab1Page } from '../tab1/tab1.page';
   styleUrls: ['tab3.page.scss'],
 })
 export class Tab3Page {
-  constructor(private cd: ChangeDetectorRef) {
-    const isStored = localStorage.getItem('recipes');
-    if (isStored) {
-      this.recipes = JSON.parse(isStored);
-    } else {
-      this.recipes = [];
-    }
-  }
+  constructor(
+    private cd: ChangeDetectorRef,
+    private restService: IonicRestService
+  ) {}
 
-  tab1: Tab1Page = new Tab1Page();
   recipe_name: string = '';
   recipe_ingredients: string = '';
   recipe_instructions: string = '';
@@ -29,7 +24,6 @@ export class Tab3Page {
   }> = [];
 
   handleChange() {
-    console.log(this.recipes);
     if (
       this.recipe_name === '' ||
       this.recipe_ingredients === '' ||
@@ -48,12 +42,8 @@ export class Tab3Page {
       this.recipe_name = '';
       this.recipe_instructions = '';
 
-      this.recipes = [...this.recipes, recipe];
+      this.restService.addARecipe(recipe).subscribe();
 
-      this.cd.detectChanges();
-
-      localStorage.setItem('recipes', JSON.stringify(this.recipes));
-      this.tab1.renderRecipes();
       this.confirm = 'Thanks for your recipe! Check it in the Home page!';
       setTimeout(() => {
         this.confirm = '';
@@ -62,7 +52,7 @@ export class Tab3Page {
   }
 
   clearRecipes() {
-    localStorage.setItem('recipes', JSON.stringify([]));
-    console.log('removed');
+    // localStorage.setItem('recipes', JSON.stringify([]));
+    this.restService.clearRecipes();
   }
 }

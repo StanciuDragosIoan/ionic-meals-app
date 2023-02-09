@@ -1,30 +1,36 @@
-import { Component } from '@angular/core';
-
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { IonicRestService } from '../ionic-rest.service';
+import { Recipe } from '../ionic-rest.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page {
-  constructor() {
+  rawRecipes: any = [];
+  recipes: Recipe[] = [];
+  fetched: boolean = false;
+
+  constructor(private restService: IonicRestService, private router: Router) {
     this.renderRecipes();
   }
 
-  recipes: Array<{ name: string; ingredients: string; instructions: string }> =
-    [];
-
   public rerenderProps: Array<number> = [1];
 
-  ngDoCheck() {
+  // TODO: improve rendering cycle
+  ngAfterContentChecked() {
     this.renderRecipes();
   }
 
   renderRecipes() {
-    const isStored = localStorage.getItem('recipes');
-    if (isStored) {
-      this.recipes = JSON.parse(isStored);
-    } else {
+    const data = this.restService.getRecipes();
+    data.subscribe((res) => {
+      this.rawRecipes = res;
       this.recipes = [];
-    }
+      for (const item in this.rawRecipes) {
+        this.recipes.push(this.rawRecipes[item]);
+      }
+    });
   }
 }
